@@ -135,6 +135,9 @@ public class DrawingView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         mx = event.getX();
         my = event.getY();
+
+        onTouchEventLine(event);
+
         switch (mCurrentShape) {
             case LINE:
                 onTouchEventLine(event);
