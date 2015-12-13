@@ -3,6 +3,7 @@ package com.example.an.mypaint;
 /**
  * Created by An on 13.12.2015.
  */
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,9 +13,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-/**
- * @author Gabriele Mariotti (gabri.mariotti@gmail.com)
- */
 public class DrawingView extends View {
 
     public static final int LINE = 1;
@@ -79,7 +77,8 @@ public class DrawingView extends View {
         super.onDraw(canvas);
         canvas.drawBitmap(mBitmap, 0, 0, mPaint);
 
-        if (isDrawing){
+        if (isDrawing) {
+            onDrawLine(canvas);
             switch (mCurrentShape) {
                 case LINE:
                     onDrawLine(canvas);
@@ -101,8 +100,6 @@ public class DrawingView extends View {
     }
 
 
-
-
     protected void init() {
         mPath = new Path();
 
@@ -119,7 +116,7 @@ public class DrawingView extends View {
         mPaintFinal = new Paint(Paint.DITHER_FLAG);
         mPaintFinal.setAntiAlias(true);
         mPaintFinal.setDither(true);
-        mPaintFinal.setColor(10);// getContext().getResources().getColor(android.R.color.holo_orange_dark));
+        mPaintFinal.setColor(getContext().getResources().getColor(android.R.color.holo_orange_dark));
         mPaintFinal.setStyle(Paint.Style.STROKE);
         mPaintFinal.setStrokeJoin(Paint.Join.ROUND);
         mPaintFinal.setStrokeCap(Paint.Cap.ROUND);
@@ -128,7 +125,7 @@ public class DrawingView extends View {
 
     protected void reset() {
         mPath = new Path();
-        countTouch=0;
+        countTouch = 0;
     }
 
     @Override
@@ -136,7 +133,12 @@ public class DrawingView extends View {
         mx = event.getX();
         my = event.getY();
 
-        onTouchEventSmoothLine(event);
+        mCurrentShape = LINE;
+//        mCurrentShape = SMOOTHLINE;
+//        mCurrentShape = RECTANGLE;
+//        mCurrentShape = SQUARE;
+//        mCurrentShape = CIRCLE;
+//        mCurrentShape = TRIANGLE;
 
         switch (mCurrentShape) {
             case LINE:
@@ -160,7 +162,6 @@ public class DrawingView extends View {
         }
         return true;
     }
-
 
 
     //------------------------------------------------------------------
@@ -240,17 +241,17 @@ public class DrawingView extends View {
     // Triangle
     //------------------------------------------------------------------
 
-    int countTouch =0;
-    float basexTriangle =0;
-    float baseyTriangle =0;
+    int countTouch = 0;
+    float basexTriangle = 0;
+    float baseyTriangle = 0;
 
-    private void onDrawTriangle(Canvas canvas){
+    private void onDrawTriangle(Canvas canvas) {
 
-        if (countTouch<3){
-            canvas.drawLine(mStartX,mStartY,mx,my,mPaint);
-        }else if (countTouch==3){
-            canvas.drawLine(mx,my,mStartX,mStartY,mPaint);
-            canvas.drawLine(mx,my,basexTriangle,baseyTriangle,mPaint);
+        if (countTouch < 3) {
+            canvas.drawLine(mStartX, mStartY, mx, my, mPaint);
+        } else if (countTouch == 3) {
+            canvas.drawLine(mx, my, mStartX, mStartY, mPaint);
+            canvas.drawLine(mx, my, basexTriangle, baseyTriangle, mPaint);
         }
     }
 
@@ -259,11 +260,11 @@ public class DrawingView extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 countTouch++;
-                if (countTouch==1){
+                if (countTouch == 1) {
                     isDrawing = true;
                     mStartX = mx;
                     mStartY = my;
-                } else if (countTouch==3){
+                } else if (countTouch == 3) {
                     isDrawing = true;
                 }
                 invalidate();
@@ -274,14 +275,14 @@ public class DrawingView extends View {
             case MotionEvent.ACTION_UP:
                 countTouch++;
                 isDrawing = false;
-                if (countTouch<3){
-                    basexTriangle=mx;
-                    baseyTriangle=my;
-                    mCanvas.drawLine(mStartX,mStartY,mx,my,mPaintFinal);
-                } else if (countTouch>=3){
-                    mCanvas.drawLine(mx,my,mStartX,mStartY,mPaintFinal);
-                    mCanvas.drawLine(mx,my,basexTriangle,baseyTriangle,mPaintFinal);
-                    countTouch =0;
+                if (countTouch < 3) {
+                    basexTriangle = mx;
+                    baseyTriangle = my;
+                    mCanvas.drawLine(mStartX, mStartY, mx, my, mPaintFinal);
+                } else if (countTouch >= 3) {
+                    mCanvas.drawLine(mx, my, mStartX, mStartY, mPaintFinal);
+                    mCanvas.drawLine(mx, my, basexTriangle, baseyTriangle, mPaintFinal);
+                    countTouch = 0;
                 }
                 invalidate();
                 break;
@@ -292,7 +293,7 @@ public class DrawingView extends View {
     // Circle
     //------------------------------------------------------------------
 
-    private void onDrawCircle(Canvas canvas){
+    private void onDrawCircle(Canvas canvas) {
         canvas.drawCircle(mStartX, mStartY, calculateRadius(mStartX, mStartY, mx, my), mPaint);
     }
 
@@ -309,14 +310,13 @@ public class DrawingView extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 isDrawing = false;
-                mCanvas.drawCircle(mStartX, mStartY, calculateRadius(mStartX,mStartY,mx,my), mPaintFinal);
+                mCanvas.drawCircle(mStartX, mStartY, calculateRadius(mStartX, mStartY, mx, my), mPaintFinal);
                 invalidate();
                 break;
         }
     }
 
     /**
-     *
      * @return
      */
     protected float calculateRadius(float x1, float y1, float x2, float y2) {
@@ -332,7 +332,7 @@ public class DrawingView extends View {
     //------------------------------------------------------------------
 
     private void onDrawRectangle(Canvas canvas) {
-        drawRectangle(canvas,mPaint);
+        drawRectangle(canvas, mPaint);
     }
 
     private void onTouchEventRectangle(MotionEvent event) {
@@ -349,19 +349,18 @@ public class DrawingView extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 isDrawing = false;
-                drawRectangle(mCanvas,mPaintFinal);
+                drawRectangle(mCanvas, mPaintFinal);
                 invalidate();
                 break;
         }
-        ;
     }
 
-    private void drawRectangle(Canvas canvas,Paint paint){
+    private void drawRectangle(Canvas canvas, Paint paint) {
         float right = mStartX > mx ? mStartX : mx;
         float left = mStartX > mx ? mx : mStartX;
         float bottom = mStartY > my ? mStartY : my;
         float top = mStartY > my ? my : mStartY;
-        canvas.drawRect(left, top , right, bottom, paint);
+        canvas.drawRect(left, top, right, bottom, paint);
     }
 
     //------------------------------------------------------------------
@@ -388,7 +387,7 @@ public class DrawingView extends View {
             case MotionEvent.ACTION_UP:
                 isDrawing = false;
                 adjustSquare(mx, my);
-                drawRectangle(mCanvas,mPaintFinal);
+                drawRectangle(mCanvas, mPaintFinal);
                 invalidate();
                 break;
         }
@@ -396,6 +395,7 @@ public class DrawingView extends View {
 
     /**
      * Adjusts current coordinates to build a square
+     *
      * @param x
      * @param y
      */
