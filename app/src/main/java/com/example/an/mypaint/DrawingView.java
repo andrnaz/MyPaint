@@ -119,7 +119,7 @@ public class DrawingView extends View {
         mPaintFinal = new Paint(Paint.DITHER_FLAG);
         mPaintFinal.setAntiAlias(true);
         mPaintFinal.setDither(true);
-        mPaintFinal.setColor(getContext().getResources().getColor(android.R.color.holo_orange_dark));
+        mPaintFinal.setColor(10);// getContext().getResources().getColor(android.R.color.holo_orange_dark));
         mPaintFinal.setStyle(Paint.Style.STROKE);
         mPaintFinal.setStrokeJoin(Paint.Join.ROUND);
         mPaintFinal.setStrokeCap(Paint.Cap.ROUND);
@@ -136,7 +136,7 @@ public class DrawingView extends View {
         mx = event.getX();
         my = event.getY();
 
-        onTouchEventLine(event);
+        onTouchEventSmoothLine(event);
 
         switch (mCurrentShape) {
             case LINE:
