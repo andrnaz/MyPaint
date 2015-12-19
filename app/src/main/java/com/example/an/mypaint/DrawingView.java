@@ -133,12 +133,7 @@ public class DrawingView extends View {
         mx = event.getX();
         my = event.getY();
 
-        mCurrentShape = LINE;
-//        mCurrentShape = SMOOTHLINE;
-//        mCurrentShape = RECTANGLE;
-//        mCurrentShape = SQUARE;
-//        mCurrentShape = CIRCLE;
-//        mCurrentShape = TRIANGLE;
+        mCurrentShape = MainActivity.iMenu;
 
         switch (mCurrentShape) {
             case LINE:
